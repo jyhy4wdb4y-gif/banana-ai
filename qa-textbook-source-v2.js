@@ -1,0 +1,14 @@
+const fs=require('fs'),vm=require('vm');
+const ctx={window:{}};vm.createContext(ctx);
+for(const f of ['textbook-source-registry.js','textbook-map-sjk.js','curriculum.js'])vm.runInContext(fs.readFileSync(f,'utf8'),ctx,{filename:f});
+const R=ctx.window.BAHASA_TEXTBOOK_SOURCES,C=ctx.window.BAHASA_CURRICULUM;
+const checks=[]; const ok=(n,v)=>{if(!v)throw Error('FAIL '+n);checks.push(n)};
+ok('Y2 KPM catalog verified',R.years[2].catalogStatus==='VERIFIED_KPM');
+ok('Y2 textbook code',R.years[2].code==='AT012003');
+ok('Y2 activity book codes',R.years[2].activityBooks.map(x=>x.code).join(',')==='AA012001,AA012002');
+ok('Y1 remains 24 mapped units',C.years[1].units.length===24&&C.years[1].mappingStatus==='TEXTBOOK_STRUCTURE_MAPPED');
+ok('Y2 unit structure not falsely claimed',R.years[2].mappingStatus==='CATALOG_VERIFIED_STRUCTURE_PENDING');
+ok('Y3-5 remain pending', [3,4,5].every(y=>R.years[y].mappingStatus.includes('PENDING')));
+ok('Y6 official DBP source registered',R.years[6].catalogStatus==='OFFICIAL_DBP_TEXTBOOK_SOURCE_VERIFIED');
+ok('copyright policy explicit',/original/i.test(R.policy));
+console.log('TEXTBOOK SOURCE V2 QA PASS',checks.length+'/8');

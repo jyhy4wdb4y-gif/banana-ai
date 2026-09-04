@@ -65,6 +65,22 @@ function promptBank(y,title,i){
  if(y===2)return `Bina ayat lengkap dan tambah satu maklumat tentang “${title}”.`;if(y===3)return `Tulis 2–3 ayat berkaitan tentang “${title}”.`;if(y===4)return `Nyatakan satu isi, huraian dan contoh tentang “${title}”.`;if(y===5)return `Rancang satu perenggan lengkap berkaitan “${title}”.`;return `Tulis respons berstruktur, koheren dan semak semula tentang “${title}”.`}
 window.BAHASA_CURRICULUM={version:'1.0-content-complete',streams:['SJKC','SJKT','SK'],curriculumVersions:{tahap1:'KSSR (Semakan 2017) · DPK Edisi 3',tahap2:'KSSR (Semakan 2017)',future:'Kurikulum Persekolahan 2027'},sourcePolicy:'KPM curriculum-aligned; original app-authored exercises; no textbook passage/image copying. SK/SP labels are only attached after source verification.',years:Object.fromEntries([1,2,3,4,5,6].map(y=>[y,{stage:goals[y][0],goal:goals[y][1],skills:skills[y],units:unitsFor(y)}]))};
 
+/* Textbook alignment overlay: Year 1 SJK structure is mapped; Years 2–6 stay explicitly pending until source-verified. */
+(function applyTextbookMap(){
+ const M=window.BAHASA_TEXTBOOK_MAP, C=window.BAHASA_CURRICULUM;
+ if(!M||!C||!M.years?.[1]?.units)return;
+ const mapped=M.years[1].units;
+ C.years[1].units=mapped.map((m,i)=>{
+   const old=C.years[1].units[i]||{};
+   return {...old,id:m.id,title:m.title,theme:[m.theme,'📘'],focus:m.focus,words:m.words.slice(),sourceBasis:m.sourceBasis,sourceStatus:m.sourceStatus,originalContent:true,mappingStatus:M.years[1].mappingStatus};
+ });
+ C.years[1].textbookAlignment=M.alignment;
+ C.years[1].mappingStatus=M.years[1].mappingStatus;
+ [2,3,4,5,6].forEach(y=>C.years[y].mappingStatus=M.years[y].mappingStatus);
+ C.textbookMapVersion=M.version;
+})();
+
+
 
 // v5 verified curriculum-source registry + original teaching-content layer.
 // These records separate official authority from app-authored pedagogy.
