@@ -1,0 +1,4 @@
+const fs=require('fs');
+const app=fs.readFileSync('app.js','utf8'), css=fs.readFileSync('style.css','utf8'), html=fs.readFileSync('index.html','utf8');
+const checks={marker:app.includes('BAHASA_IPAD_V350'),year1:app.includes('interactive foundation lesson'),stages:['Dengar','Kenal','Sebut','Cuba'].every(x=>app.includes(x)),noSentenceGuard:app.includes('Tidak perlu membina ayat'),speechOptional:app.includes('speechRecognitionRequired:false'),navTablet:css.includes('nth-of-type(n+7)'),independentProtected:app.includes('Belum dikira mastery penuh'),projectBoundary:app.includes('karanganAIDependency:false'),title:html.includes('Bahasa AI COMPLETE RC1')||html.includes('ULTIMATE v350')};
+for(const [k,v] of Object.entries(checks)) console.log(`${v?'PASS':'FAIL'} ${k}`); if(Object.values(checks).some(v=>!v))process.exit(1);
