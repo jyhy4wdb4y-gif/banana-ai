@@ -26,7 +26,17 @@ const skills={
 const goals={1:['Asas Bahasa','Bunyi → suku kata → perkataan → frasa → ayat mudah'],2:['Bina Ayat','Ayat lengkap → penerangan → maklumat'],3:['Asas Perenggan','Ayat → idea → susun idea → perenggan'],4:['Penulisan Berstruktur','Isi → huraian → contoh → perenggan'],5:['Kembangkan Karangan','Pendahuluan → isi → huraian → contoh → penutup'],6:['Penulis Berdikari','Rancang → tulis → semak → baiki → kuasai']};
 function unitsFor(y){return unitTitles[y].map((title,i)=>({id:`T${y}U${i+1}`,title,theme:themes[Math.floor(i/3)],focus:skills[y][Math.min(skills[y].length-1,Math.floor(i*skills[y].length/24))][0],words:wordBank(y,i),prompt:promptBank(y,title,i)}))}
 function wordBank(y,i){const banks=[['keluarga','rumah','sekolah','baik','gembira','bersih'],['sihat','makan','minum','cergas','selamat','bersih'],['jalan','bahaya','berhati-hati','peraturan','bantu','selamat'],['jiran','kawan','hormat','kerjasama','ramah','bersama'],['Malaysia','budaya','bendera','seni','bangga','indah'],['sains','teknologi','cipta','guna','mudah','kreatif'],['alam','pokok','haiwan','sungai','hijau','lestari'],['wang','usaha','amanah','jimat','jujur','tanggungjawab']];return banks[Math.floor(i/3)].slice(0,Math.min(6,3+y))}
-function promptBank(y,title,i){if(y===1)return `Bina satu ayat mudah tentang “${title}”.`;if(y===2)return `Bina ayat lengkap dan tambah satu maklumat tentang “${title}”.`;if(y===3)return `Tulis 2–3 ayat berkaitan tentang “${title}”.`;if(y===4)return `Nyatakan satu isi, huraian dan contoh tentang “${title}”.`;if(y===5)return `Rancang satu perenggan lengkap berkaitan “${title}”.`;return `Tulis respons berstruktur, koheren dan semak semula tentang “${title}”.`}
+function promptBank(y,title,i){
+ if(y===1){
+  if(i<3)return `Dengar dan kenal bunyi huruf dalam perkataan mudah tentang “${title}”.`;
+  if(i<6)return `Sebut dan padankan suku kata untuk perkataan mudah tentang “${title}”.`;
+  if(i<9)return `Kenal dan pilih perkataan yang sesuai tentang “${title}”.`;
+  if(i<12)return `Gabungkan perkataan menjadi frasa mudah tentang “${title}”.`;
+  if(i<18)return `Bina satu ayat mudah bermakna tentang “${title}”.`;
+  if(i<21)return `Baca ayat ringkas dan cari maklumat tentang “${title}”.`;
+  return `Tulis satu ayat mudah secara terkawal tentang “${title}”.`;
+ }
+ if(y===2)return `Bina ayat lengkap dan tambah satu maklumat tentang “${title}”.`;if(y===3)return `Tulis 2–3 ayat berkaitan tentang “${title}”.`;if(y===4)return `Nyatakan satu isi, huraian dan contoh tentang “${title}”.`;if(y===5)return `Rancang satu perenggan lengkap berkaitan “${title}”.`;return `Tulis respons berstruktur, koheren dan semak semula tentang “${title}”.`}
 window.BAHASA_CURRICULUM={version:'5.0.0',streams:['SJKC','SJKT','SK'],curriculumVersions:{tahap1:'KSSR (Semakan 2017) · DPK Edisi 3',tahap2:'KSSR (Semakan 2017)',future:'Kurikulum Persekolahan 2027'},sourcePolicy:'KPM curriculum-aligned; original app-authored exercises; no textbook passage/image copying. SK/SP labels are only attached after source verification.',years:Object.fromEntries([1,2,3,4,5,6].map(y=>[y,{stage:goals[y][0],goal:goals[y][1],skills:skills[y],units:unitsFor(y)}]))};
 
 
