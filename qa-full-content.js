@@ -1,0 +1,18 @@
+const fs=require('fs'),vm=require('vm');
+const root=__dirname;const ctx={window:{}};vm.createContext(ctx);
+for(const f of ['curriculum.js','content-quality-v70.js','full-content-matrix.js','content-depth-v120.js'])vm.runInContext(fs.readFileSync(root+'/'+f,'utf8'),ctx,{filename:f});
+const C=ctx.window.BAHASA_CURRICULUM,F=ctx.window.BAHASA_FULL_CONTENT,P=ctx.window.BAHASA_CONTENT_V70;
+let tests=[];const add=(n,ok,d='')=>tests.push({n,ok:!!ok,d});
+add('144 curriculum units',Array.from({length:6},(_,k)=>C.getYear(k+1).length).reduce((a,b)=>a+b,0)===144);
+const a=F.audit();add('full content audit',a.passed&&a.units===144,JSON.stringify(a));
+let rec=Object.values(F.records);add('432 readings',rec.reduce((n,r)=>n+r.readings.length,0)===432);
+add('1296 questions',rec.reduce((n,r)=>n+r.questions.length,0)===1296);
+add('432 grammar tasks',rec.reduce((n,r)=>n+r.grammar.length,0)===432);
+add('all transfer+mastery',rec.every(r=>r.writing.transfer&&r.writing.mastery&&r.masteryPolicy.independentRequired));
+add('Y1 U1 no sentence writing',!JSON.stringify(F.records.T1U1).toLowerCase().includes('bina satu ayat'));
+add('Y1 U1 unit lexicon',F.records.T1U1.vocab.slice(0,6).join('|')==='saya|nama|murid|kelas|umur|sekolah',F.records.T1U1.vocab.join(','));
+add('Y1 first 12 no writing prompt',Array.from({length:12},(_,i)=>C.getYear(1)[i].prompt).every(x=>!/^Bina satu ayat|^Tulis satu ayat/i.test(x)));
+add('Y1 progression',C.getYear(1)[0].focus==='huruf'&&C.getYear(1)[3].focus==='suku'&&C.getYear(1)[6].focus==='kata'&&C.getYear(1)[9].focus==='frasa');
+add('content blueprint override',P.blueprint(6,23,C.getYear(6)[23]).unitId==='T6U24');
+add('no Karangan dependency',!fs.readFileSync(root+'/full-content-matrix.js','utf8').includes('Karangan AI'));
+for(const t of tests)console.log(`${t.ok?'PASS':'FAIL'} | ${t.n}${t.d?' | '+t.d:''}`);if(tests.some(t=>!t.ok))process.exit(1);
